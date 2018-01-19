@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  zookeeper:
+    build: ./broker/zookeeper
+    image: psmiraglia/elk/broker/zookeeper
+  kafka:
+    build: ./broker/kafka
+    image: psmiraglia/elk/broker/kafka
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper:zookeeper
+    environment:
+      - ZK_HOST=zookeeper
