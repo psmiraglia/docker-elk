@@ -13,3 +13,15 @@ services:
       - zookeeper:zookeeper
     environment:
       - ZK_HOST=zookeeper
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.2
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.1.2
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - 5601:5601
