@@ -1,0 +1,12 @@
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+processors:
+- add_cloud_metadata:
+
+output.kafka:
+  hosts:
+  - 'kafka:9092'
+  topic: 'logstash'
+  client_id: 'metricbeat'
