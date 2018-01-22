@@ -10,4 +10,10 @@ The resulting architecture is below depicted
 
 The resulting architecture is below depicted
 
-![architectur-2](./img/arch2.png)
+![architecture-2](./img/arch2.png)
+
+### How to run it
+
+Run the following command
+
+    $ docker-compose -f docker-compose-common.yml -f docker-compose-2.yml up --build
