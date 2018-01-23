@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  #
+  # shipper
+  #
+  metricbeat:
+    build: ./shipper/metricbeat
+    image: psmiraglia/elk/s1/shipper/metricbeat
+    depends_on:
+      - kafka
+    links:
+      - kafka:kafka
+  #
+  # broker
+  #
+  zookeeper:
+    build: ./scenario-1/broker/zookeeper
+    image: psmiraglia/elk/s1/broker/zookeeper
+  kafka:
+    build: ./scenario-1/broker/kafka
+    image: psmiraglia/elk/s1/broker/kafka
+    depends_on:
+      - zookeeper
+    links:
+      - zookeeper:zookeeper
+    environment:
+      - ZK_HOST=zookeeper
+  #
+  # indexer
+  #
+  logstash:
+    build: ./scenario-1/indexer/logstash
+    image: psmiraglia/elk/s1/indexer/logstash
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+      - kafka:kafka
+  #
+  # storage
+  #
+  # Remember to run
+  #
+  #   echo 262144 > /proc/sys/vm/max_map_count
+  #
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.2
+  #
+  # viewer
+  #
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.1.2
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - 5601:5601

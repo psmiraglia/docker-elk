@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  #
+  # shipper
+  #
+  metricbeat:
+    build:
+      context: ./scenario-2/shipper/metricbeat
+      dockerfile: Dockerfile
+    image: psmiraglia/elk/s2/shipper/metricbeat
+    depends_on:
+      - redis
+    links:
+      - redis:redis
+  #
+  # broker
+  #
+  redis:
+    image: redis:alpine
+  #
+  # indexer
+  #
+  logstash:
+    build:
+      context: ./scenario-2/indexer/logstash
+      dockerfile: Dockerfile
+    image: psmiraglia/elk/s2/indexer/logstash
+    depends_on:
+      - redis
+      - elasticsearch
+    links:
+      - redis:redis
+      - elasticsearch:elasticsearch
+  #
+  # storage
+  #
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.2
+  #
+  # viewer
+  #
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.1.2
+    depends_on:
+      - elasticsearch
+    links:
+      - elasticsearch:elasticsearch
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - 5601:5601
