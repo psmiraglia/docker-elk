@@ -1,6 +1,6 @@
 # ELK stack with Docker
 
-The repository contains a set of ELK deployemnt scenarios implemented with
+The repository contains a set of ELK deployment scenarios implemented with
 Docker.
 
 ## Requirements
